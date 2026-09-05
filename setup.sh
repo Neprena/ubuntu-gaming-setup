@@ -68,6 +68,16 @@ for module in "${modules[@]}"; do
       source "${REPO_ROOT}/modules/system.sh"
       install_system_foundation
       ;;
+    nvidia)
+      # shellcheck source=modules/nvidia.sh
+      source "${REPO_ROOT}/modules/nvidia.sh"
+      install_nvidia_driver
+      ;;
+    gaming-stack)
+      # shellcheck source=modules/gaming-stack.sh
+      source "${REPO_ROOT}/modules/gaming-stack.sh"
+      install_gaming_stack
+      ;;
     *) die "Module not implemented yet: ${module}" ;;
   esac
 done
