@@ -85,6 +85,7 @@ write_os_release() {
 @test "preflight warns when Secure Boot state cannot be determined" {
   write_os_release '26.04'
   make_stub dpkg '[[ "$1" == "--print-architecture" ]] && printf "amd64\n"'
+  make_stub mokutil 'exit 1'
 
   run env PATH="${TEST_TMPDIR}/bin:${PATH}" OS_RELEASE_FILE="${TEST_TMPDIR}/os-release" XDG_CURRENT_DESKTOP=GNOME XDG_SESSION_TYPE=wayland bash -c 'source "$1/lib/common.sh"; preflight_check' _ "${REPO_ROOT}"
 
