@@ -72,6 +72,10 @@ for module in "${modules[@]}"; do
       # shellcheck source=modules/nvidia.sh
       source "${REPO_ROOT}/modules/nvidia.sh"
       install_nvidia_driver
+      if [[ "${NVIDIA_REBOOT_REQUIRED:-0}" == "1" ]]; then
+        log_warn "Stopping before later modules; reboot, complete MOK enrollment if prompted, then rerun setup"
+        break
+      fi
       ;;
     gaming-stack)
       # shellcheck source=modules/gaming-stack.sh

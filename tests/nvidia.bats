@@ -18,3 +18,10 @@ load test_helper
   [[ "${output}" != *'nvidia-driver-'* ]]
   [[ "${output}" != *'.run'* ]]
 }
+
+@test "a first NVIDIA installation requests an installer stop for reboot" {
+  run env DRY_RUN=1 bash -c 'source "$1/lib/common.sh"; source "$1/modules/nvidia.sh"; install_nvidia_driver; printf "stop=%s\n" "$NVIDIA_REBOOT_REQUIRED"' _ "${REPO_ROOT}"
+
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *'stop=1'* ]]
+}

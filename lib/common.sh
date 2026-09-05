@@ -44,6 +44,17 @@ apt_install() {
   run_privileged apt-get install -y -- "$@"
 }
 
+enable_i386() {
+  local foreign_architectures
+
+  foreign_architectures="$(dpkg --print-foreign-architectures)"
+  if grep -Fxq 'i386' <<<"${foreign_architectures}"; then
+    return 0
+  fi
+
+  run_privileged dpkg --add-architecture i386
+}
+
 invoking_user() {
   if [[ -n "${SUDO_USER:-}" && "${SUDO_USER}" != "root" ]]; then
     printf '%s\n' "${SUDO_USER}"

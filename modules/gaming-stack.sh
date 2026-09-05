@@ -17,6 +17,8 @@ install_gaming_stack() {
     vulkan-tools
   )
 
+  enable_i386
+
   if [[ "${ENABLE_GAMESCOPE:-true}" == "true" ]]; then
     packages+=(gamescope)
   fi
