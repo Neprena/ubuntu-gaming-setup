@@ -50,12 +50,24 @@ done
 
 IFS=',' read -r -a modules <<<"${selected_modules}"
 
+if ! is_dry_run; then
+  preflight_check
+fi
+
 for module in "${modules[@]}"; do
   [[ -n "${module}" ]] || die "Module names cannot be empty"
 
   if is_dry_run; then
     printf '[DRY-RUN] module: %s\n' "${module}"
-  else
-    die "Module not implemented yet: ${module}"
+    continue
   fi
+
+  case "${module}" in
+    system)
+      # shellcheck source=modules/system.sh
+      source "${REPO_ROOT}/modules/system.sh"
+      install_system_foundation
+      ;;
+    *) die "Module not implemented yet: ${module}" ;;
+  esac
 done
