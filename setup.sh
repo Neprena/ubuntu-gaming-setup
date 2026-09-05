@@ -8,7 +8,8 @@ if [[ "${script_path}" == */* ]]; then
 else
   script_dir='.'
 fi
-readonly REPO_ROOT="$(cd "${script_dir}" && pwd)"
+REPO_ROOT="$(cd "${script_dir}" && pwd)"
+readonly REPO_ROOT
 
 # shellcheck source=lib/common.sh
 source "${REPO_ROOT}/lib/common.sh"

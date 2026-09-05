@@ -10,6 +10,8 @@ load test_helper
 }
 
 @test "invoking_user prefers the desktop user recorded by sudo" {
+  # Expansion belongs to the nested Bash process.
+  # shellcheck disable=SC2016
   run env SUDO_USER=player USER=root bash -c 'source "$1/lib/common.sh"; invoking_user' _ "${REPO_ROOT}"
 
   [ "${status}" -eq 0 ]
