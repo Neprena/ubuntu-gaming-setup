@@ -138,7 +138,7 @@ secure_boot_state() {
 }
 
 preflight_check() {
-  local version arch desktop session
+  local version arch desktop session secure_boot
 
   version="$(detect_ubuntu_version)"
   [[ "${version}" == "26.04" ]] || die "Ubuntu 26.04 is required; found ${version:-unknown}"
@@ -155,6 +155,13 @@ preflight_check() {
     tty) log_warn "TTY detected; GNOME Wayland will be required for graphical use" ;;
     *) die "Wayland is required for an active graphical session; found ${session}" ;;
   esac
+
+  secure_boot="$(secure_boot_state)"
+  if [[ "${secure_boot}" == "unknown" ]]; then
+    log_warn "Secure Boot state: unknown"
+  else
+    log_info "Secure Boot: ${secure_boot}"
+  fi
 
   log_info "Preflight passed for Ubuntu ${version} on ${arch}, GNOME ${session}"
 }

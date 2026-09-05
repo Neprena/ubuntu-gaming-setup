@@ -70,3 +70,24 @@ write_os_release() {
   [ "${status}" -ne 0 ]
   [[ "${output}" == *'Ubuntu 26.04'* ]]
 }
+
+@test "preflight reports enabled Secure Boot" {
+  write_os_release '26.04'
+  make_stub dpkg '[[ "$1" == "--print-architecture" ]] && printf "amd64\n"'
+  make_stub mokutil '[[ "$1" == "--sb-state" ]] && printf "SecureBoot enabled\n"'
+
+  run env PATH="${TEST_TMPDIR}/bin:${PATH}" OS_RELEASE_FILE="${TEST_TMPDIR}/os-release" XDG_CURRENT_DESKTOP=GNOME XDG_SESSION_TYPE=wayland bash -c 'source "$1/lib/common.sh"; preflight_check' _ "${REPO_ROOT}"
+
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *'[INFO] Secure Boot: enabled'* ]]
+}
+
+@test "preflight warns when Secure Boot state cannot be determined" {
+  write_os_release '26.04'
+  make_stub dpkg '[[ "$1" == "--print-architecture" ]] && printf "amd64\n"'
+
+  run env PATH="${TEST_TMPDIR}/bin:${PATH}" OS_RELEASE_FILE="${TEST_TMPDIR}/os-release" XDG_CURRENT_DESKTOP=GNOME XDG_SESSION_TYPE=wayland bash -c 'source "$1/lib/common.sh"; preflight_check' _ "${REPO_ROOT}"
+
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *'[WARN] Secure Boot state: unknown'* ]]
+}
